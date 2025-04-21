@@ -1,0 +1,60 @@
+name: SMP
+version: '1.0'
+main: live.blackninja.smp.Core
+api-version: '1.21'
+author: blackNinja46
+website: blackninja.live
+
+commands:
+  home:
+    description: An Command to set Homes
+  tpa:
+    description: An TPA Command
+  smp:
+    description: An Command to Setup an SMP
+  spawn:
+    description: An Command to teleport a Person to the Spawn
+  voteban:
+    description: Vote ban Command
+    aliases: [ vote ]
+  status:
+    description: Set a Status with this Command
+  hubschrauber:
+    description: Random Command
+  resourcepack:
+    description: Mange the ResourcePack
+  timeout:
+    description: TimeOut Function Command
+  untimeout:
+    description: TimeOut Function Command
+  ecsee:
+    description: See the EnderChest of the Player
+  invsee:
+    description: See the Inventory of the Player
+
+permissions:
+  ninjasmp.*:
+    children:
+      ninjasmp.cmd.smp: true
+      ninjasmp.template: true
+      ninjasmp.team: true
+      ninjasmp.voteban.admin: true
+      ninjasmp.status.admin: true
+      ninjasmp.cmd.openend: true
+      ninjasmp.cmd.restart: true
+      ninjasmp.rank.admin: true
+      ninjasmp.cmd.scale: true
+      ninjasmp.cmd.invsee: true
+      ninjasmp.cmd.ecsee: true
+      ninjasmp.cmd.ec: true
+      ninjasmp.cmd.timeout: true
+      ninjasmp.cmd.resourcepack: true
+
+  ninjasmp.rank.player:
+    description: Player Rank
+  ninjasmp.rank.ninja+:
+    description: Ninja+ Rank
+  ninjasmp.rank.vip:
+    description: VIP Rank
+  ninjasmp.rank.moderator:
+    description: Moderator Rank
