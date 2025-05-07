@@ -111,5 +111,33 @@ public class IntegerFormat {
         return sb.toString().trim();
     }
 
+    public static String getFormattedTimeLong(long totalSeconds) {
+        long seconds = totalSeconds;
+
+        long weeks = seconds / (7L * 24 * 60 * 60);
+        seconds %= (7L * 24 * 60 * 60);
+
+        long days = seconds / (24 * 60 * 60);
+        seconds %= (24 * 60 * 60);
+
+        long hours = seconds / (60 * 60);
+        seconds %= (60 * 60);
+
+        long minutes = seconds / 60;
+        seconds %= 60;
+
+        StringBuilder sb = new StringBuilder();
+        if (weeks > 0)   sb.append(weeks).append("w ");
+        if (days > 0)    sb.append(days).append("d ");
+        if (hours > 0)   sb.append(hours).append("h ");
+        if (minutes > 0) sb.append(minutes).append("m ");
+        sb.append(seconds).append("s");
+
+        return sb.toString().trim();
+    }
+
+
+
+
 
 }

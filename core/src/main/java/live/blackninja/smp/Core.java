@@ -23,6 +23,8 @@ public final class Core extends JavaPlugin {
         addonManger = new AddonManger(this);
         smpManger = new SMPManger(this);
 
+        smpManger.getElytraManger().load();
+
         registerCommands();
         registerListeners(getServer().getPluginManager());
     }
@@ -54,6 +56,7 @@ public final class Core extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        smpManger.getElytraManger().save();
     }
 
     public AddonManger getAddonManger() {

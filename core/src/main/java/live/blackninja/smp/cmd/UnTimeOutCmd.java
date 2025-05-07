@@ -40,6 +40,11 @@ public record UnTimeOutCmd(Core core) implements CommandExecutor, TabCompleter {
         UUID targetUUID = UUIDFetcher.getUUID(targetName);
         timeOutManger.unTimeOut(targetUUID);
 
+        if (timeOutManger.isPlayerExist(player.getUniqueId())) {
+            player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Der Spieler %b" + targetName + " §7ist nicht auf der Timeout-Liste!"));
+            return false;
+        }
+
         player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Der Spieler %b" + targetName + " §7wurde §centbannt§7!"));
         return false;
     }
@@ -60,6 +65,9 @@ public record UnTimeOutCmd(Core core) implements CommandExecutor, TabCompleter {
             Set<String> timeOutedPlayer = timeOutManger.getTimeOutedPlayer();
             if (timeOutedPlayer.isEmpty()) {
             }else for (String s : timeOutedPlayer) {
+                if (timeOutedPlayer.contains(s)) {
+                    continue;
+                }
                 UUID uuid = UUIDFetcher.getUUID(s);
                 tc.add(timeOutManger.getUsername(uuid));
             }

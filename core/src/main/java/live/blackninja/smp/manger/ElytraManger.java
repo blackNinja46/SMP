@@ -1,11 +1,7 @@
 package live.blackninja.smp.manger;
 
 import live.blackninja.smp.config.ElytraConfig;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -23,14 +19,14 @@ public class ElytraManger {
         load();
     }
 
-    private void load() {
-        if (config.getConfig().contains("Elytra.Received")) {
-            for (String uuidStr : config.getConfig().getStringList("Elytra.Received")) {
+    public void load() {
+        if (config.getConfig().contains("elytra.received")) {
+            for (String uuidStr : config.getConfig().getStringList("elytra.received")) {
                 received.add(UUID.fromString(uuidStr));
             }
         }
-        if (config.getConfig().contains("Elytra.Used")) {
-            for (String uuidStr : config.getConfig().getStringList("Elytra.Used")) {
+        if (config.getConfig().contains("elytra.used")) {
+            for (String uuidStr : config.getConfig().getStringList("elytra.used")) {
                 used.add(UUID.fromString(uuidStr));
             }
         }

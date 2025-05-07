@@ -1,0 +1,9 @@
+name: SMPWebhook
+version: '1.0'
+main: live.blackninja.webhook.Webhook
+api-version: '1.21'
+author: blackNinja46
+website: blackninja.live
+
+depend:
+  - SMP

@@ -5,9 +5,10 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Color;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 
-public record PlayerLoginListener(Core core) {
+public record PlayerLoginListener(Core core) implements Listener {
 
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {

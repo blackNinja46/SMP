@@ -18,4 +18,7 @@ public class AddonManger {
         addons.put(addon, addonClass);
     }
 
+    public HashMap<Addons, Addon> getAddons() {
+        return addons;
+    }
 }
