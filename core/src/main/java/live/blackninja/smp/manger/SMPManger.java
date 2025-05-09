@@ -25,6 +25,7 @@ public class SMPManger {
     private VoteBanManger voteBanManger;
     private TimeOutManger timeOutManger;
     private ElytraManger elytraManger;
+    private DelayedOpeningManger delayedOpeningManger;
 
     private Config config;
 
@@ -39,6 +40,7 @@ public class SMPManger {
         voteBanManger = new VoteBanManger(core);
         timeOutManger = new TimeOutManger(core);
         elytraManger = new ElytraManger();
+        delayedOpeningManger = new DelayedOpeningManger(core, this);
 
         config = new Config("config");
         initDefaultConfig();
@@ -117,6 +119,10 @@ public class SMPManger {
             }
         }
                 .runTaskTimer(core, 20L, 20L);
+    }
+
+    public DelayedOpeningManger getDelayedOpeningManger() {
+        return delayedOpeningManger;
     }
 
     public TimeOutManger getTimeOutManger() {

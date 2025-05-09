@@ -49,6 +49,7 @@ permissions:
       ninjasmp.cmd.ec: true
       ninjasmp.cmd.timeout: true
       ninjasmp.cmd.resourcepack: true
+      ninjasmp.cmd.timer: true
 
   ninjasmp.rank.player:
     description: Player Rank
