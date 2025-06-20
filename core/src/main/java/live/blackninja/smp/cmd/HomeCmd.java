@@ -37,7 +37,7 @@ public record HomeCmd(Core core) implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            if (homeManger.getCountForPlayer(player.getName()) >= homeManger.getMaxHomes()) {
+            if (homeManger.getCountForPlayer(player.getName()) <= 0) {
                 player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Du hast die %ymaximale §7Anzahl an %bHomes §7erreicht!"));
                 return true;
             }

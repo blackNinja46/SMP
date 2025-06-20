@@ -29,7 +29,7 @@ public final class Webhook extends JavaPlugin implements Addon {
         core = (Core) getServer().getPluginManager().getPlugin("SMP");
 
         if (core == null) {
-            getLogger().severe("Core-Plugin nicht gefunden! Deaktiviere SMP-Economy System...");
+            getLogger().severe("Core-Plugin nicht gefunden! Deaktiviere SMP-Webook System...");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -41,6 +41,9 @@ public final class Webhook extends JavaPlugin implements Addon {
         chatDataManger = new ChatDataManger();
 
         saveDefaultConfig();
+
+        configManger.setChannelId("1324797050709344330");
+        configManger.save();
 
         try {
             bot.start();

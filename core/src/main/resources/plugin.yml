@@ -29,8 +29,14 @@ commands:
     description: TimeOut Function Command
   ecsee:
     description: See the EnderChest of the Player
+  ec:
+    description: See your the EnderChest
   invsee:
     description: See the Inventory of the Player
+  timer:
+    description: Timer Command
+  restart:
+    description: Restart the Server
 
 permissions:
   ninjasmp.*:

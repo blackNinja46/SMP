@@ -33,7 +33,7 @@ public class AuctionGUI {
         SmartInventory.builder()
                 .manager(economy.getInventoryManager())
                 .size(6, 9)
-                .title("§9Auction House §8(§7" + page + "§8)")
+                .title("§9Auction House §8(§7" + page + "§8) §8| §cBETA")
                 .provider(new InventoryProvider() {
                     @Override
                     public void init(Player player, InventoryContents contents) {

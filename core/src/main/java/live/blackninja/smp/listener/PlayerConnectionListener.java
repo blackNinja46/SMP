@@ -18,8 +18,6 @@ import java.util.UUID;
 
 public record PlayerConnectionListener(Core core) implements Listener {
 
-    private static final Set<UUID> glided = new HashSet<>();
-
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
@@ -75,26 +73,5 @@ public record PlayerConnectionListener(Core core) implements Listener {
             return;
         }
         player.setResourcePack(url, hash, true);
-    }
-
-    @EventHandler
-    public void onEntityToggleGlide(EntityToggleGlideEvent event) {
-        ElytraManger elytraManger = core.getSmpManger().getElytraManger();
-        if (!(event.getEntity() instanceof Player)) return;
-
-        Player player = (Player) event.getEntity();
-        UUID uuid = player.getUniqueId();
-
-        if (event.isGliding()) {
-            if (!elytraManger.hasUsed(uuid)) {
-                glided.add(uuid);
-            }
-        } else {
-            if (glided.remove(uuid) && !elytraManger.hasUsed(uuid)) {
-                elytraManger.markUsed(uuid);
-                player.getInventory().setChestplate(null);
-                player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Deine %btemporäre Elytra §7ist nun §cverbraucht§7!"));
-            }
-        }
     }
 }

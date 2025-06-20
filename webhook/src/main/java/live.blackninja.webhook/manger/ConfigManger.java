@@ -34,6 +34,9 @@ public class ConfigManger {
         instance.saveConfig();
     }
 
+    public void setChannelId(String channelId) {
+        this.channelId = channelId;
+    }
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;

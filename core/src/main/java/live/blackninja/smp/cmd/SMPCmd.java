@@ -54,6 +54,22 @@ public record SMPCmd(Core core) implements CommandExecutor, TabCompleter {
                 player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Du hast die Elytra-Condfig von %b" + target.getName() + " §7zurückgesetzt"));
 
             }
+            case "spawnDisplay" -> {
+                if (!player.hasPermission("ninjasmp.cmd.smp.spawnDisplay")) {
+                    player.sendMessage(Core.NO_PERMS);
+                    return true;
+                }
+                core.getSmpManger().spawnTextDisplay(player.getLocation());
+                player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Du hast ein %bSpawn-Display §7gesetzt!"));
+            }
+            case "removeDisplay" -> {
+                if (!player.hasPermission("ninjasmp.cmd.smp.removeSpawnDisplay")) {
+                    player.sendMessage(Core.NO_PERMS);
+                    return true;
+                }
+                core.getSmpManger().removeSpawnTextDisplay();
+                player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Das %bSpawn-Display §7wurde entfernt!"));
+            }
         }
 
         return false;
@@ -71,6 +87,8 @@ public record SMPCmd(Core core) implements CommandExecutor, TabCompleter {
             }
             tc.add("spawn");
             tc.add("resetElytra");
+            tc.add("spawnDisplay");
+            tc.add("removeDisplay");
         }
 
         return tc;

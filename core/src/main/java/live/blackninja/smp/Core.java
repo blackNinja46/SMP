@@ -6,8 +6,13 @@ import live.blackninja.smp.listener.*;
 import live.blackninja.smp.manger.SMPManger;
 import live.blackninja.smp.manger.addon.AddonManger;
 import live.blackninja.smp.util.CommandUtils;
+import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.HappyGhast;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Timer;
 
 public final class Core extends JavaPlugin {
 
@@ -41,7 +46,10 @@ public final class Core extends JavaPlugin {
         new CommandUtils("timeout", new TimeOutCmd(this), new TimeOutCmd(this), this);
         new CommandUtils("untimeout", new UnTimeOutCmd(this), new UnTimeOutCmd(this), this);
         new CommandUtils("ecsee", new EcseeCmd(this), this);
+        new CommandUtils("ec", new EcCmd(this), this);
         new CommandUtils("invsee", new InvseeCmd(this), this);
+        new CommandUtils("timer", new TimerCmd(this), this);
+        new CommandUtils("restart", new RestartCmd(this), this);
     }
 
     private void registerListeners(PluginManager pluginManager) {
@@ -52,11 +60,23 @@ public final class Core extends JavaPlugin {
         pluginManager.registerEvents(new ResourcePackListener(this), this);
         pluginManager.registerEvents(new TimeOutListener(this), this);
         pluginManager.registerEvents(new InvSeeListener(this), this);
+        pluginManager.registerEvents(new ElytraListener(this), this);
     }
 
     @Override
     public void onDisable() {
-        smpManger.getElytraManger().save();
+        //smpManger.getElytraManger().save();
+        smpManger.getDelayedOpeningManger().save();
+
+        resetHappyGhastFlySpeed();
+    }
+
+    public void resetHappyGhastFlySpeed() {
+        for (World world : this.getServer().getWorlds()) {
+            for (HappyGhast ghast : world.getEntitiesByClass(HappyGhast.class)) {
+                ghast.getAttribute(Attribute.FLYING_SPEED).setBaseValue(0.05);
+            }
+        }
     }
 
     public AddonManger getAddonManger() {

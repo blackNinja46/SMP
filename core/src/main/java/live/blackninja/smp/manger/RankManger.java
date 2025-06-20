@@ -57,12 +57,12 @@ public class RankManger {
             return;
         }
         if (statusManger.hasPlayerStatus(player)) {
-            player.setPlayerListName("§f\uEfd5 §x§f§7§c§7§0§5" + player.getName() + " §8[" + statusManger.getStatusDisplay(statusManger.getStatus(player)) + "§8]");
-            player.setDisplayName("§f\uEfd5 §x§f§7§c§7§0§5" + player.getName() + " §8[" + statusManger.getStatusDisplay(statusManger.getStatus(player)) + "§8]");
+            player.setPlayerListName("§f\uEfd5 §7" + player.getName() + " §8[" + statusManger.getStatusDisplay(statusManger.getStatus(player)) + "§8]");
+            player.setDisplayName("§f\uEfd5 §7" + player.getName() + " §8[" + statusManger.getStatusDisplay(statusManger.getStatus(player)) + "§8]");
             return;
         }
-        player.setPlayerListName("§f\uEfd5 §x§f§7§c§7§0§5" + player.getName());
-        player.setDisplayName("§f\uEfd5 §x§f§7§c§7§0§5" + player.getName());
+        player.setPlayerListName("§f\uEfd5 §7" + player.getName());
+        player.setDisplayName("§f\uEfd5 §7" + player.getName());
         return;
 
 

@@ -2,9 +2,11 @@ package live.blackninja.smp.builder;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -39,6 +41,17 @@ public class ItemBuilder {
     public ItemBuilder setDisplayName(String displayName) {
         assert displayName != null;
         meta.setDisplayName(displayName);
+        return this;
+    }
+
+    public ItemBuilder setDisplayName(Component component) {
+        assert component != null;
+        meta.displayName(component);
+        return this;
+    }
+
+    public ItemBuilder setModel(String modelName) {
+        meta.setItemModel(NamespacedKey.fromString(modelName));
         return this;
     }
 

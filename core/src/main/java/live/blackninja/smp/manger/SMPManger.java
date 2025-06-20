@@ -3,11 +3,16 @@ package live.blackninja.smp.manger;
 import live.blackninja.smp.Core;
 import live.blackninja.smp.builder.ItemBuilder;
 import live.blackninja.smp.builder.MessageBuilder;
+import live.blackninja.smp.builder.TextDisplayBuilder;
 import live.blackninja.smp.config.Config;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
+import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -26,13 +31,18 @@ public class SMPManger {
     private TimeOutManger timeOutManger;
     private ElytraManger elytraManger;
     private DelayedOpeningManger delayedOpeningManger;
+    private RecipeManger recipeManger;
 
     private Config config;
 
     private final int teleportationDelay;
 
+    private TextDisplayBuilder spawnTextDisplay;
+
     public SMPManger(Core core) {
         this.core = core;
+
+        config = new Config("config");
 
         homeManger = new HomeManger(core);
         rankManger = new RankManger(core);
@@ -40,12 +50,13 @@ public class SMPManger {
         voteBanManger = new VoteBanManger(core);
         timeOutManger = new TimeOutManger(core);
         elytraManger = new ElytraManger();
+        recipeManger = new RecipeManger(core);
         delayedOpeningManger = new DelayedOpeningManger(core, this);
 
-        config = new Config("config");
         initDefaultConfig();
         teleportationDelay = config.getConfig().getInt("TeleportationDelay");
 
+        spawnTextDisplay(core.getServer().getWorlds().get(0).getSpawnLocation());
     }
 
     public void initPlayer(String playerName) {
@@ -97,6 +108,7 @@ public class SMPManger {
 
                 if (countdown <= 0) {
                     player.teleport(location);
+                    teleportionList.remove(player);
                     player.sendMessage(MessageBuilder.buildOld(
                             Core.PREFIX + "§7Du wurdest %gerfolgreich %bTeleportiert§7!"
                     ));
@@ -105,6 +117,7 @@ public class SMPManger {
                 }
 
                 if (player.getLocation().distanceSquared(initialLocation) > 0.01) {
+                    teleportionList.remove(player);
                     player.sendMessage(MessageBuilder.buildOld(
                             Core.PREFIX + "§7Du hast dich %ybewegt§7! Die %yTeleportation §7wurde %rabgebrochen"
                     ));
@@ -119,6 +132,34 @@ public class SMPManger {
             }
         }
                 .runTaskTimer(core, 20L, 20L);
+    }
+
+    public void spawnTextDisplay(Location location) {
+        spawnTextDisplay = new TextDisplayBuilder(location)
+                .setTextMiniMessage(MiniMessage.miniMessage().deserialize(
+                        "\n" +
+                                "<color:#ffd152>★</color> <gradient:#5CDAC7:#48A3D8>ᴍɪɴᴇᴄʀᴀғᴛ sᴍᴘ sᴇᴀsᴏɴ 5</gradient> <color:#ffd152>★</color>\n" +
+                                "<gray>*-----------------------*\n" +
+                                "<white>Willkommen Zurück!</white>\n" +
+                                "\n" +
+                                "<white>Informationen findest du hier</white>\n" +
+                                "<dark_gray>>> </dark_gray><color:#7d90ff>discord.blackNinja.live</color> <dark_gray><<</dark_gray>\n" +
+                                "\n" +
+                                "<color:#59baff>/tpa <dark_gray>| </dark_gray><color:#59baff>/home <dark_gray>|</dark_gray> <color:#59baff>/spawn</color>\n"
+                ))
+                .setAlignment(TextDisplay.TextAlignment.CENTER)
+                .setBillboard(TextDisplay.Billboard.FIXED)
+                .setTag("spawn-display")
+                .setInvisibleBackground(true)
+                .setRotation(location.getYaw(), 0);
+    }
+
+    public void removeSpawnTextDisplay() {
+        for (World world : core.getServer().getWorlds()) {
+            world.getEntities().stream()
+                    .filter(entity -> entity instanceof TextDisplay && entity.getScoreboardTags().contains("spawn-display"))
+                    .forEach(Entity::remove);
+        }
     }
 
     public DelayedOpeningManger getDelayedOpeningManger() {
@@ -151,5 +192,9 @@ public class SMPManger {
 
     public ElytraManger getElytraManger() {
         return elytraManger;
+    }
+
+    public RecipeManger getRecipeManger() {
+        return recipeManger;
     }
 }
