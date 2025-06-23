@@ -63,6 +63,10 @@ public record PlayerInteractListener(Core core) implements Listener {
             }
 
             messageCooldown.put(uuid, now);
+            if (event.getPortalType() == PortalType.ENDER) {
+                player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Das §dEnd §7wurde noch %rnicht §7geöffnet!"));
+                return;
+            }
             player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Der §cNether §7wurde noch %rnicht §7geöffnet!"));
         }
 

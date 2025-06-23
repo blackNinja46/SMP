@@ -22,8 +22,7 @@ public record EcCmd(Core core) implements CommandExecutor {
             return false;
         }
 
-        Player target = Bukkit.getPlayer(args[0]);
-        player.openInventory(target.getEnderChest());
+        player.openInventory(player.getEnderChest());
 
         return false;
     }
