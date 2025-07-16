@@ -31,7 +31,7 @@ public class VoteBanManger {
     private String reason;
 
     private BossBar bossBar;
-    public static final String VOTE_BAN_PREFIX = MessageBuilder.buildOld("§8| §cVB §8%> §r");
+    public static final String VOTE_BAN_PREFIX = MessageBuilder.buildOld("§8[§f\uEfe3§8] §r");
 
     public VoteBanManger(Core core) {
         this.core = core;

@@ -59,6 +59,10 @@ public record TimerCmd(Core core) implements CommandExecutor, TabCompleter {
                 core.getSmpManger().getDelayedOpeningManger().pauseDelay();
                 player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Der %bTimer §7wurde pausiert."));
             }
+            case "reset" -> {
+                core.getSmpManger().getDelayedOpeningManger().reset();
+                player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Die Configuration des Timers wurde zurückgesetzt."));
+            }
             case "spawnDisplay" -> {
                 core.getSmpManger().getDelayedOpeningManger().spawnTextDisplay(player.getLocation());
                 player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Der Text-Display wurde an deiner Position gesetzt."));
@@ -82,6 +86,6 @@ public record TimerCmd(Core core) implements CommandExecutor, TabCompleter {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
-        return List.of("set", "resume", "pause", "spawnDisplay", "removeDisplay", "help");
+        return List.of("set", "resume", "pause", "reset", "spawnDisplay", "removeDisplay", "help");
     }
 }

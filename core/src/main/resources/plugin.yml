@@ -5,6 +5,8 @@ api-version: '1.21'
 author: blackNinja46
 website: blackninja.live
 
+depend: [LuckPerms]
+
 commands:
   home:
     description: An Command to set Homes

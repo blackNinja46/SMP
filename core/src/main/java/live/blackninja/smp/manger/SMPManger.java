@@ -55,8 +55,6 @@ public class SMPManger {
 
         initDefaultConfig();
         teleportationDelay = config.getConfig().getInt("TeleportationDelay");
-
-        spawnTextDisplay(core.getServer().getWorlds().get(0).getSpawnLocation());
     }
 
     public void initPlayer(String playerName) {
@@ -65,13 +63,6 @@ public class SMPManger {
 
         Player player = core.getServer().getPlayer(playerName);
         UUID uuid = player.getUniqueId();
-
-        if (!elytraManger.hasUsed(uuid)) {
-            player.getInventory().setChestplate(new ItemBuilder(Material.ELYTRA).setDisplayName("§bTemporäre Elytra").build());
-            elytraManger.markReceived(uuid);
-
-            player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Du hast eine %btemporäre Elytra §7erhalten!"));
-        }
     }
 
     public void initDefaultConfig() {
@@ -151,6 +142,7 @@ public class SMPManger {
                 .setBillboard(TextDisplay.Billboard.FIXED)
                 .setTag("spawn-display")
                 .setInvisibleBackground(true)
+                .setShadowed(true)
                 .setRotation(location.getYaw(), 0);
     }
 

@@ -5,6 +5,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
@@ -32,7 +33,7 @@ public class UUIDFetcher {
             }
         });
 
-        nameCache = CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.MINUTES).maximumSize(10000).build(new CacheLoader<>() {
+        nameCache = CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.MINUTES).maximumSize(10000).build( new CacheLoader<>() {
             @Override
             public String load(UUID key) {
                 return cacheName(key);
@@ -89,7 +90,14 @@ public class UUIDFetcher {
                     .build();
             HttpResponse<String> response = HttpClient.newBuilder().build().send(request, HttpResponse.BodyHandlers.ofString());
 
-            return gson.fromJson(response.body(), JsonObject.class).get("name").getAsString();
+            JsonElement element = gson.fromJson(response.body(), JsonElement.class);
+            if (element != null && element.isJsonObject()) {
+                JsonObject json = element.getAsJsonObject();
+                if (json.has("name")) {
+                    return json.get("name").getAsString();
+                }
+            }
+
         } catch (URISyntaxException | InterruptedException | IOException e) {
             e.printStackTrace();
         }
@@ -112,7 +120,14 @@ public class UUIDFetcher {
                     .build();
             HttpResponse<String> response = HttpClient.newBuilder().build().send(request, HttpResponse.BodyHandlers.ofString());
 
-            return UUIDTypeAdapter.fromString(gson.fromJson(response.body(), JsonObject.class).get("id").getAsString());
+            JsonElement element = gson.fromJson(response.body(), JsonElement.class);
+            if (element != null && element.isJsonObject()) {
+                JsonObject json = element.getAsJsonObject();
+                if (json.has("id")) {
+                    return UUIDTypeAdapter.fromString(json.get("id").getAsString());
+                }
+            }
+
         } catch (URISyntaxException | InterruptedException | IOException e) {
             e.printStackTrace();
         }

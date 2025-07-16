@@ -20,7 +20,7 @@ public record TpaCmd(Core core) implements CommandExecutor, TabCompleter {
     private static Map<UUID, UUID> tpaRequests = new HashMap<>(); // Ziel -> Anfragender
     private static Map<UUID, Integer> tpaTimeouts = new HashMap<>(); // Zum Canceln der Ablauf-Tasks
 
-    private static final String PREFIX = "§8| §f\uEfe2 §8%> ";
+    private static final String PREFIX = "§8[§f\uEfe2§8] §r";
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

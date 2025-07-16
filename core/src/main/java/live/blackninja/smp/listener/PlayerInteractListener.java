@@ -17,6 +17,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
@@ -34,6 +35,12 @@ public record PlayerInteractListener(Core core) implements Listener {
 
         if (core.getSmpManger().getDelayedOpeningManger().isEndOpened()) {
             return;
+        }
+
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
+            if (event.getItem().getType().toString().contains("CHESTPLATE") && event.getPlayer().getInventory().getChestplate().getItemMeta().getDisplayName().equals("§bTemporäre Elytra")) {
+                event.setCancelled(true);
+            }
         }
 
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
@@ -80,10 +87,40 @@ public record PlayerInteractListener(Core core) implements Listener {
 
         if (event.getCurrentItem() != null && event.getCurrentItem().getItemMeta() != null && event.getCurrentItem().getItemMeta().getDisplayName().contains("§bTemporäre Elytra")) {
             event.setCancelled(true);
+            event.getInventory().clear(event.getSlot());
             return;
         }
 
     }
+
+    @EventHandler
+    public void onInventoryClick(PlayerDropItemEvent event) {
+        Player player = (Player) event.getPlayer();
+
+        if (event.getItemDrop().getItemStack().getItemMeta() != null && event.getItemDrop().getItemStack().getItemMeta().getDisplayName().contains("§bTemporäre Elytra")) {
+            event.setCancelled(true);
+            return;
+        }
+
+    }
+
+    @EventHandler
+    public void onInventoryClick(PlayerSwapHandItemsEvent event) {
+        Player player = (Player) event.getPlayer();
+
+        if (event.getMainHandItem().getItemMeta() != null && event.getMainHandItem().getItemMeta().getDisplayName().contains("§bTemporäre Elytra")) {
+            event.setCancelled(true);
+            return;
+        }
+
+        if (event.getOffHandItem().getItemMeta() != null && event.getOffHandItem().getItemMeta().getDisplayName().contains("§bTemporäre Elytra")) {
+            event.setCancelled(true);
+            return;
+        }
+
+    }
+
+
 
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {

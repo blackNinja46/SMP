@@ -16,8 +16,8 @@ import java.util.Timer;
 
 public final class Core extends JavaPlugin {
 
-    public static final String PREFIX = "§8| §f\uEfe1 §8%> ";
-    public static final String NO_PERMS = MessageBuilder.buildOld(PREFIX + "%r%x §7| §7Dafür hast du %rkeine §7Rechte!");
+    public static final String PREFIX = "§8[%b⚡§8] ";
+    public static final String NO_PERMS = MessageBuilder.buildOld(PREFIX + "%r✘ §7| §7Dafür hast du %rkeine §7Rechte!");
 
     private AddonManger addonManger;
     private SMPManger smpManger;

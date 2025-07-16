@@ -57,6 +57,7 @@ public class DelayedOpeningManger {
             return;
         }
         isRunning = true;
+        updateTextDisplay();
     }
 
     public void runDelay() {
@@ -86,6 +87,7 @@ public class DelayedOpeningManger {
 
     public void pauseDelay() {
         isRunning = false;
+        updateTextDisplay();
     }
 
     public void load() {
@@ -115,6 +117,7 @@ public class DelayedOpeningManger {
             default -> throw new IllegalArgumentException("Invalid type: " + type);
         }
         save();
+        updateTextDisplay();
     }
 
     public void spawnTextDisplay(Location location) {
@@ -175,6 +178,16 @@ public class DelayedOpeningManger {
                 "<white>\uEfe4 Nether: " + nether + "\n" +
                 " \n" +
                 "<white>\uEfe5 End: " + end + "\n";
+    }
+
+    public void reset() {
+        netherTimestamp = 0;
+        endTimestamp = 0;
+        netherOpened = false;
+        endOpened = false;
+        isRunning = false;
+        save();
+        updateTextDisplay();
     }
 
     public boolean isEndOpened() {
