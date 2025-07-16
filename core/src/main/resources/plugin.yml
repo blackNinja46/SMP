@@ -39,6 +39,8 @@ commands:
     description: Timer Command
   restart:
     description: Restart the Server
+  errorwatcher:
+    description: Observe all Error live
 
 permissions:
   ninjasmp.*:

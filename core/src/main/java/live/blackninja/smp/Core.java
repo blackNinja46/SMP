@@ -6,6 +6,7 @@ import live.blackninja.smp.listener.*;
 import live.blackninja.smp.manger.SMPManger;
 import live.blackninja.smp.manger.addon.AddonManger;
 import live.blackninja.smp.util.CommandUtils;
+import live.blackninja.smp.util.ErrorWatcher;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.HappyGhast;
@@ -32,6 +33,11 @@ public final class Core extends JavaPlugin {
 
         registerCommands();
         registerListeners(getServer().getPluginManager());
+
+        Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
+            String msg = throwable.getClass().getSimpleName() + ": " + throwable.getMessage();
+            ErrorWatcher.broadcastError(msg);
+        });
     }
 
     private void registerCommands() {
@@ -50,6 +56,7 @@ public final class Core extends JavaPlugin {
         new CommandUtils("invsee", new InvseeCmd(this), this);
         new CommandUtils("timer", new TimerCmd(this), this);
         new CommandUtils("restart", new RestartCmd(this), this);
+        new CommandUtils("errorwatcher", new ErrorWatcherCmd(), this);
     }
 
     private void registerListeners(PluginManager pluginManager) {

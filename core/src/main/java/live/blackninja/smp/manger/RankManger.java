@@ -30,7 +30,7 @@ public class RankManger {
 
         String symbol = "§f\uEfd5"; // Default Symbol (Spieler)
         String color = "§7";        // Default Farbe
-        int weight = 0;
+        int weight = 1;
 
         switch (group.toLowerCase()) {
             case "admin":
@@ -59,6 +59,10 @@ public class RankManger {
                 color = "§x§0§0§A§E§D§3";
                 weight = 60;
                 break;
+            case "cam":
+                symbol = "§f\uEfd8";
+                color = "§x§4§c§4§c§4§c";
+                weight = 0;
         }
 
         String name = color + player.getName();

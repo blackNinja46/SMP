@@ -98,7 +98,7 @@ public record PlayerInteractListener(Core core) implements Listener {
     }
 
     @EventHandler
-    public void onInventoryClick(PlayerDropItemEvent event) {
+    public void onPlayerDropTempElytra(PlayerDropItemEvent event) {
         Player player = (Player) event.getPlayer();
 
         if (event.getItemDrop().getItemStack().getItemMeta() != null && event.getItemDrop().getItemStack().getItemMeta().getDisplayName().contains("§bTemporäre Elytra")) {
@@ -129,7 +129,7 @@ public record PlayerInteractListener(Core core) implements Listener {
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
 
-        System.out.println("EntityDropItemEvent triggered");
+        //System.out.println("EntityDropItemEvent triggered");
 
         Player player = event.getPlayer();
 
