@@ -37,6 +37,10 @@ public record PlayerInteractListener(Core core) implements Listener {
             return;
         }
 
+        if (event.getItem() == null || event.getItem().getType() == Material.AIR) {
+            return;
+        }
+
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
             if (event.getItem().getType().toString().contains("CHESTPLATE") && event.getPlayer().getInventory().getChestplate().getItemMeta().getDisplayName().equals("§bTemporäre Elytra")) {
                 event.setCancelled(true);
