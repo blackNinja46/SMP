@@ -57,6 +57,8 @@ public final class Core extends JavaPlugin {
         new CommandUtils("timer", new TimerCmd(this), this);
         new CommandUtils("restart", new RestartCmd(this), this);
         new CommandUtils("errorwatcher", new ErrorWatcherCmd(), this);
+        new CommandUtils("scale", new ScaleCmd(this), this);
+        new CommandUtils("info", new InfoCmd(), this);
     }
 
     private void registerListeners(PluginManager pluginManager) {

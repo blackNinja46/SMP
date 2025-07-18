@@ -41,6 +41,10 @@ commands:
     description: Restart the Server
   errorwatcher:
     description: Observe all Error live
+  scale:
+    description: Scale Command
+  info:
+    description: Gives you infos about the Plugins
 
 permissions:
   ninjasmp.*:
