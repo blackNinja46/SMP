@@ -37,6 +37,26 @@ public record TpaCmd(Core core) implements CommandExecutor, TabCompleter {
                 return true;
             }
 
+            if (args[0].equalsIgnoreCase("cancel")) {
+                UUID targetUUID = player.getUniqueId();
+
+                if (!tpaRequests.containsValue(targetUUID)) {
+                    player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Du hast keine %bTPA-Anfrage §7zum %rAbbrechen"));
+                    return true;
+                }
+                cancelTpaRequest(targetUUID);
+                player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Deine %bTPA-Anfrage §7wurde %rabgebrochen"));
+                for (UUID requesterUUID : tpaRequests.keySet()) {
+                    if (tpaRequests.get(requesterUUID).equals(targetUUID)) {
+                        Player requester = Bukkit.getPlayer(requesterUUID);
+                        if (requester != null && requester.isOnline()) {
+                            requester.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Die %bTPA-Anfrage §7von %b" + player.getDisplayName() + " §7wurde %rabgebrochen"));
+                        }
+                    }
+                }
+                return true;
+            }
+
             // /tpa <Spieler>
             Player target = Bukkit.getPlayerExact(args[0]);
             if (target == null || !target.isOnline()) {
@@ -137,6 +157,7 @@ public record TpaCmd(Core core) implements CommandExecutor, TabCompleter {
             // Subcommands
             if ("accept".startsWith(partial)) completions.add("accept");
             if ("deny".startsWith(partial)) completions.add("deny");
+            if ("cancel".startsWith(partial)) completions.add("cancel");
 
             // Online-Spieler
             for (Player online : Bukkit.getOnlinePlayers()) {

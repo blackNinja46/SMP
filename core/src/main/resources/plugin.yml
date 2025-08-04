@@ -45,6 +45,22 @@ commands:
     description: Scale Command
   info:
     description: Gives you infos about the Plugins
+  # Staff Commands
+  vanish:
+    description: Vanish Command
+  fly:
+    description: Fly Command
+  staffchat:
+    description: Staff Chat Command
+  staff:
+    description: Staff Mode Command
+  randomtp:
+    description: Random Teleport Command
+  freeze:
+    description: Freeze Command
+  heal:
+    description: Heal Command
+
 
 permissions:
   ninjasmp.*:
@@ -64,6 +80,18 @@ permissions:
       ninjasmp.cmd.timeout: true
       ninjasmp.cmd.resourcepack: true
       ninjasmp.cmd.timer: true
+  ninjasmp.staff.*:
+    description: All Staff Permissions
+    children:
+      ninjasmp.staff.bypass: true
+      ninjasmp.staff.cmd.vanish: true
+      ninjasmp.staff.cmd.fly: true
+      ninjasmp.staff.cmd.chat: true
+      ninjasmp.staff.cmd.randomtp: true
+      ninjasmp.staff.cmd.staffmode: true
+      ninjasmp.staff.cmd.heal: true
+      ninjasmp.staff.cmd.freeze: true
+
 
   ninjasmp.rank.player:
     description: Player Rank

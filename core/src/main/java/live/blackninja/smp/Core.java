@@ -2,8 +2,10 @@ package live.blackninja.smp;
 
 import live.blackninja.smp.builder.MessageBuilder;
 import live.blackninja.smp.cmd.*;
+import live.blackninja.smp.cmd.staff.*;
 import live.blackninja.smp.listener.*;
 import live.blackninja.smp.manger.SMPManger;
+import live.blackninja.smp.manger.StaffManger;
 import live.blackninja.smp.manger.addon.AddonManger;
 import live.blackninja.smp.util.CommandUtils;
 import live.blackninja.smp.util.ErrorWatcher;
@@ -13,8 +15,6 @@ import org.bukkit.entity.HappyGhast;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Timer;
-
 public final class Core extends JavaPlugin {
 
     public static final String PREFIX = "§8[%b⚡§8] ";
@@ -22,12 +22,16 @@ public final class Core extends JavaPlugin {
 
     private AddonManger addonManger;
     private SMPManger smpManger;
+    private StaffManger staffManger;
+
+    //TODO - Commands: staff, fly, freeze, heal, randomtp, vanish, top
 
     @Override
     public void onEnable() {
 
         addonManger = new AddonManger(this);
         smpManger = new SMPManger(this);
+        staffManger = new StaffManger(this);
 
         smpManger.getElytraManger().load();
 
@@ -56,9 +60,9 @@ public final class Core extends JavaPlugin {
         new CommandUtils("invsee", new InvseeCmd(this), this);
         new CommandUtils("timer", new TimerCmd(this), this);
         new CommandUtils("restart", new RestartCmd(this), this);
-        new CommandUtils("errorwatcher", new ErrorWatcherCmd(), this);
+        new CommandUtils("errorwatcher", new ErrorWatcherCmd(this), this);
         new CommandUtils("scale", new ScaleCmd(this), this);
-        new CommandUtils("info", new InfoCmd(), this);
+        new CommandUtils("info", new InfoCmd(this), this);
     }
 
     private void registerListeners(PluginManager pluginManager) {
@@ -70,6 +74,7 @@ public final class Core extends JavaPlugin {
         pluginManager.registerEvents(new TimeOutListener(this), this);
         pluginManager.registerEvents(new InvSeeListener(this), this);
         pluginManager.registerEvents(new ElytraListener(this), this);
+        pluginManager.registerEvents(new StaffListener(this, staffManger), this);
     }
 
     @Override
@@ -94,5 +99,9 @@ public final class Core extends JavaPlugin {
 
     public SMPManger getSmpManger() {
         return smpManger;
+    }
+
+    public StaffManger getStaffManager() {
+        return staffManger;
     }
 }

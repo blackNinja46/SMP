@@ -1,4 +1,4 @@
-package live.blackninja.smp.cmd;
+package live.blackninja.smp.cmd.staff;
 
 import live.blackninja.smp.Core;
 import live.blackninja.smp.builder.MessageBuilder;
@@ -8,7 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class ErrorWatcherCmd implements CommandExecutor {
+public record ErrorWatcherCmd(Core core) implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

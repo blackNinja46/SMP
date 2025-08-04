@@ -1,4 +1,4 @@
-package live.blackninja.smp.cmd;
+package live.blackninja.smp.cmd.staff;
 
 import live.blackninja.smp.Core;
 import live.blackninja.smp.builder.MessageBuilder;
@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class InfoCmd implements CommandExecutor {
+public record InfoCmd(Core core) implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player)) {

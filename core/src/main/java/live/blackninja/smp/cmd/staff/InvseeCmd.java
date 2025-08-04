@@ -1,6 +1,5 @@
-package live.blackninja.smp.cmd;
+package live.blackninja.smp.cmd.staff;
 
-import fr.minuskube.inv.SmartInventory;
 import live.blackninja.smp.Core;
 import live.blackninja.smp.builder.MessageBuilder;
 import live.blackninja.smp.manger.InvSeeHolder;
