@@ -57,15 +57,13 @@ public class ItemBuilder {
 
     public ItemBuilder setSkullOwner(Player owner) {
         assert owner != null;
-        try {
-            SkullMeta skull = (SkullMeta) item.getItemMeta();
-            skull.setOwningPlayer(owner);
-            item.setItemMeta(skull);
-            return this;
-        } catch (ClassCastException e) {
-            return null;
-        }
+        if (!(meta instanceof SkullMeta)) return this;
+
+        SkullMeta skullMeta = (SkullMeta) meta;
+        skullMeta.setOwningPlayer(owner);
+        return this;
     }
+
 
     public ItemBuilder setLore(String... lore) {
         assert lore != null;

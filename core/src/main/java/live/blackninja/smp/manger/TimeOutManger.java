@@ -19,7 +19,7 @@ public class TimeOutManger {
     private Core core;
     private TimeOutConfig config;
 
-    public static final String PREFIX = "§8| §x§D§B§4§4§4§4T§x§D§D§4§2§5§2i§x§D§E§4§1§5§Fm§x§E§0§3§F§6§De§x§E§1§3§D§7§BO§x§E§3§3§C§8§8u§x§E§4§3§A§9§6t §8» §r";
+    public static final String PREFIX = StaffManger.STAFF_PREFIX;
 
     public TimeOutManger(Core core) {
         this.core = core;

@@ -1,11 +1,17 @@
 package live.blackninja.smp;
 
+import fr.minuskube.inv.InventoryManager;
 import live.blackninja.smp.builder.MessageBuilder;
 import live.blackninja.smp.cmd.*;
+import live.blackninja.smp.cmd.shortcuts.DelHomeCmd;
+import live.blackninja.smp.cmd.shortcuts.SetHomeCmd;
+import live.blackninja.smp.cmd.shortcuts.TpaAcceptCmd;
+import live.blackninja.smp.cmd.shortcuts.TpaDenyCmd;
 import live.blackninja.smp.cmd.staff.*;
 import live.blackninja.smp.listener.*;
 import live.blackninja.smp.manger.SMPManger;
 import live.blackninja.smp.manger.StaffManger;
+import live.blackninja.smp.manger.StatsManger;
 import live.blackninja.smp.manger.addon.AddonManger;
 import live.blackninja.smp.util.CommandUtils;
 import live.blackninja.smp.util.ErrorWatcher;
@@ -23,8 +29,8 @@ public final class Core extends JavaPlugin {
     private AddonManger addonManger;
     private SMPManger smpManger;
     private StaffManger staffManger;
-
-    //TODO - Commands: staff, fly, freeze, heal, randomtp, vanish, top
+    private InventoryManager inventoryManager;
+    private StatsManger statsManger;
 
     @Override
     public void onEnable() {
@@ -32,6 +38,10 @@ public final class Core extends JavaPlugin {
         addonManger = new AddonManger(this);
         smpManger = new SMPManger(this);
         staffManger = new StaffManger(this);
+        inventoryManager = new InventoryManager(this);
+        statsManger = new StatsManger(this);
+
+        inventoryManager.init();
 
         smpManger.getElytraManger().load();
 
@@ -63,6 +73,16 @@ public final class Core extends JavaPlugin {
         new CommandUtils("errorwatcher", new ErrorWatcherCmd(this), this);
         new CommandUtils("scale", new ScaleCmd(this), this);
         new CommandUtils("info", new InfoCmd(this), this);
+        new CommandUtils("ping", new PingCmd(this), this);
+        new CommandUtils("msg", new MsgCmd(this), this);
+        new CommandUtils("stats", new StatsCmd(this), this);
+        new CommandUtils("leaderboard", new LeaderboardCmd(this), this);
+
+        //Shotcuts
+        new CommandUtils("sethome", new SetHomeCmd(this), this);
+        new CommandUtils("delhome", new DelHomeCmd(this), new DelHomeCmd(this), this);
+        new CommandUtils("tpaaccept", new TpaAcceptCmd(this), this);
+        new CommandUtils("tpadeny", new TpaDenyCmd(this), this);
     }
 
     private void registerListeners(PluginManager pluginManager) {
@@ -75,6 +95,8 @@ public final class Core extends JavaPlugin {
         pluginManager.registerEvents(new InvSeeListener(this), this);
         pluginManager.registerEvents(new ElytraListener(this), this);
         pluginManager.registerEvents(new StaffListener(this, staffManger), this);
+        pluginManager.registerEvents(new PlayerDeathListener(this), this);
+        pluginManager.registerEvents(new StatsListener(this, statsManger), this);
     }
 
     @Override
@@ -93,6 +115,10 @@ public final class Core extends JavaPlugin {
         }
     }
 
+    public StatsManger getStatsManger() {
+        return statsManger;
+    }
+
     public AddonManger getAddonManger() {
         return addonManger;
     }
@@ -103,5 +129,9 @@ public final class Core extends JavaPlugin {
 
     public StaffManger getStaffManager() {
         return staffManger;
+    }
+
+    public InventoryManager getInventoryManager() {
+        return inventoryManager;
     }
 }

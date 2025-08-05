@@ -55,7 +55,7 @@ public class SyncChatManger {
         User author = member.getUser();
 
         if (member.hasPermission(Permission.ADMINISTRATOR)) {
-            finalMessage = MessageBuilder.build("<color:#ff8045>" + author.getAsTag() + " <dark_gray>[<color:#7d97ff>Discord<dark_gray>]: <white>" + message.getContentDisplay());
+            finalMessage = MessageBuilder.build("<color:#ff8045>" + author.getName() + " <dark_gray>[<color:#7d97ff>Discord<dark_gray>]: <color:#a1b7c2>" + message.getContentDisplay());
 
             for (Player player : Bukkit.getOnlinePlayers()) {
                 player.sendMessage(finalMessage);
@@ -63,7 +63,7 @@ public class SyncChatManger {
             return;
         }
 
-        finalMessage = MessageBuilder.build("<white>" + author.getAsTag() + " <dark_gray>[<color:#7d97ff>Discord<dark_gray>]: <white>" + message.getContentDisplay());
+        finalMessage = MessageBuilder.build("<white>" + author.getName() + " <dark_gray>[<color:#7d97ff>Discord<dark_gray>]: <color:#a1b7c2>" + message.getContentDisplay());
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.sendMessage(finalMessage);

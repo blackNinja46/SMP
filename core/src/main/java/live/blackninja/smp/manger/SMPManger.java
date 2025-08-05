@@ -8,6 +8,7 @@ import live.blackninja.smp.config.Config;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
@@ -32,6 +33,7 @@ public class SMPManger {
     private ElytraManger elytraManger;
     private DelayedOpeningManger delayedOpeningManger;
     private RecipeManger recipeManger;
+    private TpaManger tpaManger;
 
     private Config config;
 
@@ -52,6 +54,7 @@ public class SMPManger {
         elytraManger = new ElytraManger();
         recipeManger = new RecipeManger(core);
         delayedOpeningManger = new DelayedOpeningManger(core, this);
+        tpaManger = new TpaManger(core);
 
         initDefaultConfig();
         teleportationDelay = config.getConfig().getInt("TeleportationDelay");
@@ -100,25 +103,25 @@ public class SMPManger {
                 if (countdown <= 0) {
                     player.teleport(location);
                     teleportionList.remove(player);
-                    player.sendMessage(MessageBuilder.buildOld(
-                            Core.PREFIX + "§7Du wurdest %gerfolgreich %bTeleportiert§7!"
-                    ));
+                    player.sendActionBar(" §7Teleportation abgeschlossen");
+                    player.playSound(player, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
                     this.cancel();
                     return;
                 }
 
                 if (player.getLocation().distanceSquared(initialLocation) > 0.01) {
                     teleportionList.remove(player);
-                    player.sendMessage(MessageBuilder.buildOld(
-                            Core.PREFIX + "§7Du hast dich %ybewegt§7! Die %yTeleportation §7wurde %rabgebrochen"
+                    player.sendActionBar(MessageBuilder.buildOld(
+                            "§7Du hast dich %rbewegt§7! Die Teleportation §7wurde %rabgebrochen§7!"
                     ));
                     this.cancel();
                     return;
                 }
 
                 player.sendActionBar(MessageBuilder.buildOld(
-                        "§8| §7Teleportation in %b" + countdown + " Sekunden §8|"
+                        "§7Teleportation in %b" + countdown + "s"
                 ));
+                player.playSound(player, Sound.BLOCK_NOTE_BLOCK_HAT, 1.0f, 2.0f);
                 countdown--;
             }
         }
@@ -152,6 +155,10 @@ public class SMPManger {
                     .filter(entity -> entity instanceof TextDisplay && entity.getScoreboardTags().contains("spawn-display"))
                     .forEach(Entity::remove);
         }
+    }
+
+    public TpaManger getTpaManger() {
+        return tpaManger;
     }
 
     public DelayedOpeningManger getDelayedOpeningManger() {

@@ -10,6 +10,7 @@ depend: [LuckPerms]
 commands:
   home:
     description: An Command to set Homes
+    aliases: [ homes ]
   tpa:
     description: An TPA Command
   smp:
@@ -27,8 +28,10 @@ commands:
     description: Mange the ResourcePack
   timeout:
     description: TimeOut Function Command
+    aliases: [ ban ]
   untimeout:
     description: TimeOut Function Command
+    aliases: [ unban, pardon ]
   ecsee:
     description: See the EnderChest of the Player
   ec:
@@ -45,6 +48,18 @@ commands:
     description: Scale Command
   info:
     description: Gives you infos about the Plugins
+  ping:
+    description: Ping Command
+  msg:
+    description: Sende einem Spieler eine private Nachricht oder antworte
+    usage: /msg [spieler] <nachricht>
+    aliases: [ r, reply, whisper ]
+  stats:
+    description: Stats Command
+    aliases: [ statistics ]
+  leaderboard:
+    description: Leaderboard Command
+
   # Staff Commands
   vanish:
     description: Vanish Command
@@ -60,6 +75,17 @@ commands:
     description: Freeze Command
   heal:
     description: Heal Command
+  # Shortcuts
+  sethome:
+    description: Set Home Shortcut
+  delhome:
+    description: Delete Home Shortcut
+  tpaaccept:
+    description: Accept TPA Shortcut
+    aliases: [ accept ]
+  tpadeny:
+    description: Deny TPA Shortcut
+    aliases: [ deny ]
 
 
 permissions:
@@ -80,6 +106,7 @@ permissions:
       ninjasmp.cmd.timeout: true
       ninjasmp.cmd.resourcepack: true
       ninjasmp.cmd.timer: true
+      ninjasmp.cmd.info: true
   ninjasmp.staff.*:
     description: All Staff Permissions
     children:

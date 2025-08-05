@@ -70,6 +70,9 @@ public record SMPCmd(Core core) implements CommandExecutor, TabCompleter {
                 core.getSmpManger().removeSpawnTextDisplay();
                 player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Das %bSpawn-Display §7wurde entfernt!"));
             }
+            case "spawnStatsDisplay" -> {
+
+            }
         }
 
         return false;

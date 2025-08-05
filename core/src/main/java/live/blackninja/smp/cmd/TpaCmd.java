@@ -2,6 +2,8 @@ package live.blackninja.smp.cmd;
 
 import live.blackninja.smp.Core;
 import live.blackninja.smp.builder.MessageBuilder;
+import live.blackninja.smp.gui.TpaGUI;
+import live.blackninja.smp.manger.TpaManger;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,10 +19,6 @@ import java.util.stream.Collectors;
 
 public record TpaCmd(Core core) implements CommandExecutor, TabCompleter {
 
-    private static Map<UUID, UUID> tpaRequests = new HashMap<>(); // Ziel -> Anfragender
-    private static Map<UUID, Integer> tpaTimeouts = new HashMap<>(); // Zum Canceln der Ablauf-Tasks
-
-    private static final String PREFIX = "§8[§f\uEfe2§8] §r";
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -30,6 +28,8 @@ public record TpaCmd(Core core) implements CommandExecutor, TabCompleter {
         }
 
         Player player = (Player) sender;
+        TpaManger tpaManger = core.getSmpManger().getTpaManger();
+        Map<UUID, UUID> tpaRequests = tpaManger.getTpaRequests(); // Ziel -> Anfragender
 
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("accept") || args[0].equalsIgnoreCase("deny")) {
@@ -41,19 +41,20 @@ public record TpaCmd(Core core) implements CommandExecutor, TabCompleter {
                 UUID targetUUID = player.getUniqueId();
 
                 if (!tpaRequests.containsValue(targetUUID)) {
-                    player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Du hast keine %bTPA-Anfrage §7zum %rAbbrechen"));
+                    player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Du hast keine %bAnfrage §7zum %rAbbrechen"));
                     return true;
                 }
-                cancelTpaRequest(targetUUID);
-                player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Deine %bTPA-Anfrage §7wurde %rabgebrochen"));
+                player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Deine %bAnfrage §7wurde zurückgezogen"));
                 for (UUID requesterUUID : tpaRequests.keySet()) {
                     if (tpaRequests.get(requesterUUID).equals(targetUUID)) {
                         Player requester = Bukkit.getPlayer(requesterUUID);
                         if (requester != null && requester.isOnline()) {
-                            requester.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Die %bTPA-Anfrage §7von %b" + player.getDisplayName() + " §7wurde %rabgebrochen"));
+                            requester.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Die %bTPA-Anfrage §7von %b" + player.getName() + " §7wurde zurückgezogen"));
+                            tpaManger.cancelTpaRequest(requesterUUID);
                         }
                     }
                 }
+
                 return true;
             }
 
@@ -65,7 +66,7 @@ public record TpaCmd(Core core) implements CommandExecutor, TabCompleter {
             }
 
             if (player.getUniqueId().equals(target.getUniqueId())) {
-                player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Du kannst dir %rnicht §7selber eine %bTPA-Anfrage §7senden"));
+                player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Du kannst dir %rnicht §7selber eine %bAnfrage §7senden"));
                 return true;
             }
 
@@ -74,23 +75,8 @@ public record TpaCmd(Core core) implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            tpaRequests.put(target.getUniqueId(), player.getUniqueId());
-
-            player.sendMessage(MessageBuilder.buildOld(PREFIX + "§aTPA-Anfrage an %b" + target.getDisplayName() + " §7gesendet."));
-            target.sendMessage(MessageBuilder.buildOld(PREFIX + "%b" + player.getDisplayName() + " §7möchte sich zu dir teleportieren."));
-            target.sendMessage(MessageBuilder.build("<click:run_command:'/tpa accept " + player.getName() + "'><gray>[</gray><color:#05ff4c>Akzeptieren</color><gray>]</gray></click> <dark_gray>|</dark_gray> <click:run_command:'/tpa deny " + player.getName() + "'><gray>[</gray><color:#ff7230>Ablehnen</color><gray>]</gray></click>"));
-
-            int taskId = Bukkit.getScheduler().scheduleSyncDelayedTask(core, () -> {
-                if (tpaRequests.containsKey(target.getUniqueId()) &&
-                        tpaRequests.get(target.getUniqueId()).equals(player.getUniqueId())) {
-                    tpaRequests.remove(target.getUniqueId());
-                    tpaTimeouts.remove(target.getUniqueId());
-                    player.sendMessage("§7Deine %bTPA-Anfrage §7an %b" + target.getDisplayName() + " §7ist abgelaufen.");
-                    target.sendMessage("§7Die %bTPA-Anfrage von %b" + player.getDisplayName() + " §7ist abgelaufen.");
-                }
-            }, 20L * 120); // 120 Sekunden
-
-            tpaTimeouts.put(target.getUniqueId(), taskId);
+            // Sende die TPA-Anfrage
+            TpaGUI.open(player, core, target.getName(), true);
 
             return true;
         }
@@ -108,23 +94,12 @@ public record TpaCmd(Core core) implements CommandExecutor, TabCompleter {
             UUID requesterUUID = requester.getUniqueId();
 
             if (!tpaRequests.containsKey(targetUUID) || !tpaRequests.get(targetUUID).equals(requesterUUID)) {
-                player.sendMessage(MessageBuilder.buildOld("§7Keine %bTPA-Anfrage §7von " + requesterName + " §7gefunden."));
+                player.sendMessage(MessageBuilder.buildOld("§7Keine %bAnfrage §7von " + requesterName + " §7gefunden."));
                 return true;
             }
 
             if (subcommand.equalsIgnoreCase("accept")) {
-                core.getSmpManger().teleport(requester, player.getLocation());
-                requester.sendMessage(MessageBuilder.buildOld(PREFIX + "§7Deine %bTPA-Anfrage §7an %b" + player.getDisplayName() + " §7wurde %gakzeptiert"));
-                player.sendMessage(MessageBuilder.buildOld(PREFIX + "§7Du hast die %bTPA-Anfrage §7von %b" + requester.getDisplayName() + " %gakzeptiert"));
-
-                cancelTpaRequest(targetUUID);
-                return true;
-
-            } else if (subcommand.equalsIgnoreCase("deny")) {
-                requester.sendMessage(MessageBuilder.buildOld(PREFIX + "§7Deine %bTPA-Anfrage an %b" + player.getDisplayName() + " §7wurde %rabgelehnt"));
-                player.sendMessage(MessageBuilder.buildOld(PREFIX + "§7Du hast die %bTPA-Anfrage §7von %b" + requester.getDisplayName() + " %rabgelehnt"));
-
-                cancelTpaRequest(targetUUID);
+                TpaGUI.open(player, core, requesterName, false);
                 return true;
 
             } else {
@@ -137,18 +112,13 @@ public record TpaCmd(Core core) implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    private void cancelTpaRequest(UUID targetUUID) {
-        tpaRequests.remove(targetUUID);
-        if (tpaTimeouts.containsKey(targetUUID)) {
-            Bukkit.getScheduler().cancelTask(tpaTimeouts.get(targetUUID));
-            tpaTimeouts.remove(targetUUID);
-        }
-    }
-
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player)) return Collections.emptyList();
+
         Player player = (Player) sender;
+        TpaManger tpaManger = core.getSmpManger().getTpaManger();
+        Map<UUID, UUID> tpaRequests = tpaManger.getTpaRequests();
 
         if (args.length == 1) {
             String partial = args[0].toLowerCase();
@@ -173,7 +143,6 @@ public record TpaCmd(Core core) implements CommandExecutor, TabCompleter {
             String sub = args[0].toLowerCase();
             String partial = args[1].toLowerCase();
             if (sub.equals("accept") || sub.equals("deny")) {
-                // Nur Spieler vorschlagen, die dir eine Anfrage geschickt haben
                 return tpaRequests.entrySet().stream()
                         .filter(e -> e.getKey().equals(player.getUniqueId()))
                         .map(e -> Bukkit.getPlayer(e.getValue()))

@@ -84,7 +84,13 @@ public class HomeManger {
         return playerSection.getKeys(false);
     }
 
-
+    public void renameHome(String player, String oldName, String newName) {
+        Location location = getHome(player, oldName);
+        if (location != null) {
+            setHome(player, newName, location);
+            deleteHome(player, oldName);
+        }
+    }
 
     public void teleportPlayerToHome(String player, String name) {
         Location location = getHome(player, name);

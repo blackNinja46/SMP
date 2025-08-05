@@ -1,6 +1,9 @@
 package live.blackninja.smp.listener;
 
+import io.papermc.paper.chat.ChatRenderer;
+import io.papermc.paper.event.player.AsyncChatEvent;
 import live.blackninja.smp.Core;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,8 +15,8 @@ public record PlayerChatListener(Core core) implements Listener {
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
 
-        event.setFormat("§f" + player.getDisplayName() + "§8: §f" + event.getMessage().replace("&", "§")
-                .replace(":fire:", "\uEfaa"));
-
+        event.setFormat("§f" + player.getDisplayName() + "§8: §x§a§1§b§7§c§2" + event.getMessage().replace("&", "§"));
     }
+
+
 }

@@ -5,6 +5,7 @@ import live.blackninja.smp.builder.MessageBuilder;
 import live.blackninja.smp.manger.ElytraManger;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
+import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,11 +19,15 @@ import java.util.UUID;
 
 public record PlayerConnectionListener(Core core) implements Listener {
 
+    private static int onlinePlayers = 0;
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        event.setJoinMessage(MessageBuilder.buildOld(Core.PREFIX + "§8[%g+§8] %b" + player.getDisplayName() + " §7hat den SMP %gbetreten"));
+        onlinePlayers++;
+
+        event.setJoinMessage(MessageBuilder.buildOld(Core.PREFIX + "§8[%g+§8] %b" + player.getDisplayName() + " §7hat den SMP betreten"));
 
         core.getSmpManger().initPlayer(player.getName());
         sendResourcepack(player);
@@ -32,7 +37,7 @@ public record PlayerConnectionListener(Core core) implements Listener {
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             onlinePlayer.setPlayerListHeader(" \n \n \n \n \n\uEfff");
-            onlinePlayer.setPlayerListFooter(MessageBuilder.buildOld("\n    §x§7§a§d§5§f§fWillkommen, §x§f§f§c§1§4§d" + onlinePlayer.getName() + "§x§7§a§d§5§f§f!    \n §x§7§a§d§5§f§fOnline Players: %g" + Bukkit.getOnlinePlayers().size() + "§8/§7" + Bukkit.getMaxPlayers() + "\n \n    §x§c§7§e§5§f§fDeveloped by blackNinja46    \n§x§0§0§a§e§f§fsᴍᴘ.ʙʟᴀᴄᴋɴɪɴᴊᴀ.ʟɪᴠᴇ\n "));
+            onlinePlayer.setPlayerListFooter(MessageBuilder.buildOld(" \n       §f" + onlinePlayers + " Players       \n§x§0§0§a§e§f§fsᴍᴘ.ʙʟᴀᴄᴋɴɪɴᴊᴀ.ʟɪᴠᴇ\n "));
         }
 
     }
@@ -54,11 +59,13 @@ public record PlayerConnectionListener(Core core) implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
-        event.setQuitMessage(MessageBuilder.buildOld(Core.PREFIX + "§8[%r-§8] %b" + player.getDisplayName() + " §7hat den SMP %rverlassen"));
+        onlinePlayers--;
+
+        event.setQuitMessage(MessageBuilder.buildOld(Core.PREFIX + "§8[%r-§8] %b" + player.getDisplayName() + " §7hat den SMP verlassen"));
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             onlinePlayer.setPlayerListHeader(" \n \n \n \n \n\uEfff");
-            onlinePlayer.setPlayerListFooter(MessageBuilder.buildOld("\n    §x§7§a§d§5§f§fWillkommen, §x§f§f§c§1§4§d" + onlinePlayer.getName() + "§x§7§a§d§5§f§f!    \n §x§7§a§d§5§f§fOnline Players: %g" + Bukkit.getOnlinePlayers().size() + "§8/§7" + Bukkit.getMaxPlayers() + "\n \n    §x§c§7§e§5§f§fDeveloped by blackNinja46    \n§x§0§0§a§e§f§fsᴍᴘ.ʙʟᴀᴄᴋɴɪɴᴊᴀ.ʟɪᴠᴇ\n "));
+            onlinePlayer.setPlayerListFooter(MessageBuilder.buildOld(" \n §f" + onlinePlayers + " Players \n§x§0§0§a§e§f§fsᴍᴘ.ʙʟᴀᴄᴋɴɪɴᴊᴀ.ʟɪᴠᴇ\n "));
         }
     }
 
