@@ -97,6 +97,7 @@ public class SMPManger {
             public void run() {
                 if (!player.isOnline()) {
                     this.cancel();
+                    teleportionList.remove(player);
                     return;
                 }
 
@@ -125,7 +126,7 @@ public class SMPManger {
                 countdown--;
             }
         }
-                .runTaskTimer(core, 20L, 20L);
+            .runTaskTimer(core, 20L, 20L);
     }
 
     public void spawnTextDisplay(Location location) {
