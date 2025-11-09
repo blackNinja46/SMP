@@ -97,6 +97,7 @@ public final class Core extends JavaPlugin {
         pluginManager.registerEvents(new StaffListener(this, staffManger), this);
         pluginManager.registerEvents(new PlayerDeathListener(this), this);
         pluginManager.registerEvents(new StatsListener(this, statsManger), this);
+        pluginManager.registerEvents(new DragonEggListener(this), this);
     }
 
     @Override

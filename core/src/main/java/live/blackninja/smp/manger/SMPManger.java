@@ -62,7 +62,6 @@ public class SMPManger {
 
     public void initPlayer(String playerName) {
         homeManger.initPlayer(playerName);
-        statusManger.updatePlayer(playerName);
 
         Player player = core.getServer().getPlayer(playerName);
         UUID uuid = player.getUniqueId();

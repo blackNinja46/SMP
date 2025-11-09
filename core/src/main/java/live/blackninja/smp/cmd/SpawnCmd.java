@@ -20,7 +20,7 @@ public record SpawnCmd(Core core) implements CommandExecutor {
 
         if (smpManger.getConfig().getConfig().contains("SpawnLocation")) {
             smpManger.teleport(player, smpManger.getConfig().getLocation("SpawnLocation"));
-            player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7oDu wirst zum Spawn teleportiert..."));
+            player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7§oDu wirst zum Spawn teleportiert..."));
         }else {
             player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Es konnte %rkein §7Spawn gefunden werden! Bitte setze einen mit %b/smp spawn§7!"));
         }

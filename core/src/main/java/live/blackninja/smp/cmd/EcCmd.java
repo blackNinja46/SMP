@@ -1,4 +1,4 @@
-package live.blackninja.smp.cmd.staff;
+package live.blackninja.smp.cmd;
 
 import live.blackninja.smp.Core;
 import live.blackninja.smp.builder.MessageBuilder;

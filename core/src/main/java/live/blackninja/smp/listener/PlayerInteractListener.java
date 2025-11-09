@@ -57,10 +57,6 @@ public record PlayerInteractListener(Core core) implements Listener {
 
     @EventHandler
     public void onEntityPortalEnter(EntityPortalEnterEvent event) {
-        if (core.getSmpManger().getDelayedOpeningManger().isNetherOpened()) {
-            return;
-        }
-
         if (event.getEntity() instanceof Player player) {
             UUID uuid = player.getUniqueId();
             long now = System.currentTimeMillis();
@@ -75,13 +71,20 @@ public record PlayerInteractListener(Core core) implements Listener {
 
             messageCooldown.put(uuid, now);
             if (event.getPortalType() == PortalType.ENDER) {
+                if (core.getSmpManger().getDelayedOpeningManger().isEndOpened()) {
+                    return;
+                }
+                event.setCancelled(true);
                 player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Das §dEnd §7wurde noch %rnicht §7geöffnet!"));
                 return;
             }
+            if (core.getSmpManger().getDelayedOpeningManger().isNetherOpened()) {
+                return;
+            }
+            event.setCancelled(true);
             player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Der §cNether §7wurde noch %rnicht §7geöffnet!"));
         }
 
-        event.setCancelled(true);
     }
 
 

@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
     compileOnly("com.mojang:authlib:1.5.25")
     compileOnly("net.luckperms:api:5.4")
     compileOnly("fr.minuskube.inv:smart-invs:1.2.7") {

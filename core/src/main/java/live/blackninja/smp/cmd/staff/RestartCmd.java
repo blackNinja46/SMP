@@ -95,18 +95,20 @@ public record RestartCmd(Core core) implements CommandExecutor, TabCompleter {
             @Override
             public void run() {
 
-                if (currentDelay == 0) {
-                    Bukkit.getScheduler().cancelTask(taskID);
-                    for (Player player : Bukkit.getOnlinePlayers()) {
-                        player.kickPlayer(MessageBuilder.buildOld("§8%> §7Der §9Server §7ist in §ckürze §7wieder erreichbar!"));
+                switch (currentDelay) {
+                    case 120, 90, 60, 30, 20, 10, 5, 4, 3, 2, 1 -> {
+                        for (Player player : Bukkit.getOnlinePlayers()) {
+                            player.sendTitle(MessageBuilder.buildOld("%rAchtung"), MessageBuilder.buildOld("%o⚠ §7Der Server startet in %r" + currentDelay + " §7Sekunden neu %o⚠"));
+                            player.playNote(player.getLocation(), Instrument.BELL, Note.sharp(2, Note.Tone.F));
+                        }
                     }
-                    Bukkit.getServer().shutdown();
-                    return;
-                }
-
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    player.sendTitle(MessageBuilder.buildOld(" "), MessageBuilder.buildOld("%o⚠ §7Der Server startet in %r" + currentDelay + " §7Sekunden neu %o⚠"));
-                    player.playNote(player.getLocation(), Instrument.BELL, Note.sharp(2, Note.Tone.F));
+                    case 0 -> {
+                        Bukkit.getScheduler().cancelTask(taskID);
+                        for (Player player : Bukkit.getOnlinePlayers()) {
+                            player.kickPlayer(MessageBuilder.buildOld("§8%> §7Der §9Server §7ist in §ckürze §7wieder erreichbar!"));
+                        }
+                        Bukkit.getServer().shutdown();
+                    }
                 }
 
                 currentDelay--;

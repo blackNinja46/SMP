@@ -27,7 +27,9 @@ public record PlayerConnectionListener(Core core) implements Listener {
 
         onlinePlayers++;
 
-        event.setJoinMessage(MessageBuilder.buildOld(Core.PREFIX + " %b" + player.getDisplayName() + " §7hat den SMP betreten"));
+        core.getSmpManger().getStatusManger().updatePlayer(player.getName());
+
+        event.setJoinMessage(MessageBuilder.buildOld("§8[§a+§8] %b" + player.getDisplayName()));
 
         core.getSmpManger().initPlayer(player.getName());
         sendResourcepack(player);
@@ -61,7 +63,7 @@ public record PlayerConnectionListener(Core core) implements Listener {
 
         onlinePlayers--;
 
-        event.setQuitMessage(MessageBuilder.buildOld(Core.PREFIX + " %b" + player.getDisplayName() + " §7hat den SMP verlassen"));
+        event.setQuitMessage(MessageBuilder.buildOld("§8[§c-§8] %b" + player.getDisplayName()));
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             onlinePlayer.setPlayerListHeader(" \n \n \n \n \n\uEfff");
