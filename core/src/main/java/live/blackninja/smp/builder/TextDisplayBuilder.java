@@ -1,20 +1,18 @@
 package live.blackninja.smp.builder;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.TextDisplay;
-import org.bukkit.inventory.ItemStack;
 
 import java.awt.*;
 
 public class TextDisplayBuilder {
 
-    private TextDisplay textDisplay;
+    private final TextDisplay textDisplay;
 
     public TextDisplayBuilder(Location location) {
 
@@ -92,6 +90,10 @@ public class TextDisplayBuilder {
     public TextDisplayBuilder remove() {
         textDisplay.remove();
         return this;
+    }
+
+    public TextDisplay build() {
+        return this.textDisplay;
     }
 
 }

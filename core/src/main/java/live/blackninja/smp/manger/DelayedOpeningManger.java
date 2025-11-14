@@ -4,26 +4,21 @@ import live.blackninja.smp.Core;
 import live.blackninja.smp.builder.MessageBuilder;
 import live.blackninja.smp.builder.TextDisplayBuilder;
 import live.blackninja.smp.config.Config;
+import live.blackninja.smp.util.EntityGlow;
 import live.blackninja.smp.util.IntegerFormat;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
 import org.bukkit.*;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.TextDisplay;
+import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class DelayedOpeningManger {
 
-    private Core core;
-    private SMPManger smpManger;
-    private Config config;
+    private final Core core;
+    private final Config config;
 
     private long netherTimestamp;
     private long endTimestamp;
@@ -38,11 +33,12 @@ public class DelayedOpeningManger {
     private boolean isRunning = false;
     private boolean isEndPhase;
 
-    private BossBar endPhaseBar;
+    private final String dragonEggTag = "dragon_egg-info";
+
+    private final BossBar endPhaseBar;
 
     public DelayedOpeningManger(Core core, SMPManger smpManger) {
         this.core = core;
-        this.smpManger = smpManger;
         this.config = smpManger.getConfig();
 
         this.isEndPhase = false;
@@ -53,15 +49,16 @@ public class DelayedOpeningManger {
         if (statusLocation != null) {
             Bukkit.getScheduler().runTaskLater(core, () -> {
                 if (statusLocation.getWorld() == null) {
-                    Bukkit.getLogger().warning("TextDisplay-Location konnte nicht geladen werden (Welt null): " + statusLocation);
+                    core.getLogger().warning("TextDisplay-Location konnte nicht geladen werden (Welt null): " + statusLocation);
                     return;
                 }
                 spawnTextDisplay(statusLocation);
             }, 20L);
         }
 
-        runDelay();
         startParticleTask();
+        System.out.println("Particles started");
+        runDelay();
 
         if (isEndPhase) {
             runEndPhase();
@@ -159,6 +156,7 @@ public class DelayedOpeningManger {
                 if (endPhaseTime <= 0) {
                     isEndPhase = false;
                     cancel();
+                    assert world != null;
                     world.setGameRule(GameRule.KEEP_INVENTORY, false);
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         player.hideBossBar(endPhaseBar);
@@ -180,27 +178,113 @@ public class DelayedOpeningManger {
         new BukkitRunnable() {
             @Override
             public void run() {
-                for (Entity entity : Bukkit.getWorlds().getFirst().getEntities()) {
-                    if (entity instanceof Item item && item.getItemStack().getType() == Material.DRAGON_EGG) {
-                        item.getWorld().spawnParticle(
-                                Particle.DRAGON_BREATH,
-                                item.getLocation().add(0, 0.3, 0),
-                                10,
-                                0.3, 0.3, 0.3,
-                                0.01
-                        );
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (!player.getInventory().contains(Material.DRAGON_EGG)) {
+                        player.setGlowing(false);
+                        continue;
+                    }
+                    player.setGlowing(true);
+                }
 
-                        item.getWorld().spawnParticle(
-                                Particle.END_ROD,
-                                item.getLocation().add(0, 0.2, 0),
-                                3,
-                                0.1, 0.3, 0.1,
-                                0.01
-                        );
+                for (World world : Bukkit.getWorlds()) {
+                    for (Entity entity : world.getEntities()) {
+                        if (entity instanceof Item item && item.getItemStack().getType() == Material.DRAGON_EGG) {
+                            EntityGlow glow = new EntityGlow(item);
+
+                            glow.setGlowing(NamedTextColor.DARK_PURPLE);
+                            item.setUnlimitedLifetime(true);
+                            entity.setGlowing(true);
+                            entity.setInvulnerable(true);
+                            entity.setPersistent(true);
+
+                            updateEggDisplay();
+
+                            item.getWorld().spawnParticle(
+                                    Particle.DRAGON_BREATH,
+                                    item.getLocation().add(0, 0.3, 0),
+                                    5,
+                                    0.3, 0.3, 0.3,
+                                    0.01,
+                                    0.0f
+                            );
+
+                            item.getWorld().spawnParticle(
+                                    Particle.END_ROD,
+                                    item.getLocation().add(0, 0.2, 0),
+                                    5,
+                                    0.1, 0.3, 0.1,
+                                    0.01
+                            );
+                        }
                     }
                 }
+
+                Item egg = getDragonEgg();
+                if (egg == null || !egg.isValid()) return;
+
+                TextDisplay display = getOrCreateEggDisplay(egg.getLocation());
+                display.teleport(egg.getLocation().add(0, 0.6, 0));
+                display.text(MessageBuilder.build(getPlayerInRangeText(egg.getLocation())));
+
+                for (Entity entity : Bukkit.getWorlds().getFirst().getEntities()) {
+                    if (entity instanceof TextDisplay td && td.getScoreboardTags().contains(dragonEggTag)) {
+                        td.remove();
+                    }
+                }
+
             }
         }.runTaskTimer(core, 0L, 10L);
+    }
+
+
+    public Item getDragonEgg() {
+        for (Entity entity : Bukkit.getWorlds().getFirst().getEntities()) {
+            if (entity instanceof Item item && item.getItemStack().getType() == Material.DRAGON_EGG) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    private String getPlayerInRangeText(Location location) {
+        int playerInRange = location.getNearbyEntities(20, 20, 20).stream()
+                .filter(entity -> entity instanceof Player)
+                .mapToInt(entity -> 1)
+                .sum();
+
+        if (playerInRange > 1) {
+            return "<red>" + playerInRange + " \uD83D\uDC64</red>";
+        }
+        return "<green>" + playerInRange + " \uD83D\uDC64</green>";
+    }
+
+    public void updateEggDisplay() {
+        Item egg = getDragonEgg();
+        if (egg == null) return;
+
+        Location loc = egg.getLocation().add(0, 0.5, 0);
+        TextDisplay display = getOrCreateEggDisplay(loc);
+
+        display.text(MessageBuilder.build(getPlayerInRangeText(loc)));
+    }
+
+    public TextDisplay getOrCreateEggDisplay(Location location) {
+        for (Entity entity : location.getWorld().getEntities()) {
+            if (entity instanceof TextDisplay textDisplay &&
+                    textDisplay.getScoreboardTags().contains(dragonEggTag)) {
+                return textDisplay;
+            }
+        }
+
+        return new TextDisplayBuilder(location)
+                .setTextMiniMessage(MessageBuilder.build(this.getPlayerInRangeText(location)))
+                .setAlignment(TextDisplay.TextAlignment.CENTER)
+                .setBillboard(TextDisplay.Billboard.CENTER)
+                .setInvisibleBackground(true)
+                .setShadowed(true)
+                .setTag(this.dragonEggTag)
+                .setRotation(location.getYaw(), 0)
+                .build();
     }
 
     public void setDate(String type, long timestamp) {
@@ -283,10 +367,6 @@ public class DelayedOpeningManger {
         isEndPhase = false;
         save();
         updateTextDisplay();
-    }
-
-    public boolean isEndPhase() {
-        return isEndPhase;
     }
 
     public boolean isEndOpened() {

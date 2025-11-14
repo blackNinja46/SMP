@@ -2,20 +2,15 @@ package live.blackninja.smp.listener;
 
 import live.blackninja.smp.Core;
 import live.blackninja.smp.builder.MessageBuilder;
-import live.blackninja.smp.manger.ElytraManger;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
-import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.Objects;
 
 public record PlayerConnectionListener(Core core) implements Listener {
 
@@ -29,12 +24,12 @@ public record PlayerConnectionListener(Core core) implements Listener {
 
         core.getSmpManger().getStatusManger().updatePlayer(player.getName());
 
-        event.setJoinMessage(MessageBuilder.buildOld("§8[§a+§8] %b" + player.getDisplayName()));
+        event.setJoinMessage(MessageBuilder.buildOld(Core.PREFIX + " %b" + player.getDisplayName() + " §7hat den SMP betreten"));
 
         core.getSmpManger().initPlayer(player.getName());
         sendResourcepack(player);
 
-        Bukkit.getWorld(player.getWorld().getName()).spawnParticle(Particle.FIREWORK, player.getLocation(), 5);
+        Objects.requireNonNull(Bukkit.getWorld(player.getWorld().getName())).spawnParticle(Particle.FIREWORK, player.getLocation(), 5);
         sendWelcomeMessage(player);
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
@@ -63,7 +58,7 @@ public record PlayerConnectionListener(Core core) implements Listener {
 
         onlinePlayers--;
 
-        event.setQuitMessage(MessageBuilder.buildOld("§8[§c-§8] %b" + player.getDisplayName()));
+        event.setQuitMessage(MessageBuilder.buildOld(Core.PREFIX + " %b" + player.getDisplayName() + " §7hat den SMP verlassen"));
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             onlinePlayer.setPlayerListHeader(" \n \n \n \n \n\uEfff");
