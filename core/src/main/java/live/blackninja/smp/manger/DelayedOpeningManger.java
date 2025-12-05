@@ -33,8 +33,6 @@ public class DelayedOpeningManger {
     private boolean isRunning = false;
     private boolean isEndPhase;
 
-    private final String dragonEggTag = "dragon_egg-info";
-
     private final BossBar endPhaseBar;
 
     public DelayedOpeningManger(Core core, SMPManger smpManger) {
@@ -56,8 +54,6 @@ public class DelayedOpeningManger {
             }, 20L);
         }
 
-        startParticleTask();
-        System.out.println("Particles started");
         runDelay();
 
         if (isEndPhase) {
@@ -172,119 +168,6 @@ public class DelayedOpeningManger {
                 Bukkit.getOnlinePlayers().forEach(player -> player.showBossBar(endPhaseBar));
             }
         }.runTaskTimer(core, 0L, 20L);
-    }
-
-    private void startParticleTask() {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (!player.getInventory().contains(Material.DRAGON_EGG)) {
-                        player.setGlowing(false);
-                        continue;
-                    }
-                    player.setGlowing(true);
-                }
-
-                for (World world : Bukkit.getWorlds()) {
-                    for (Entity entity : world.getEntities()) {
-                        if (entity instanceof Item item && item.getItemStack().getType() == Material.DRAGON_EGG) {
-                            EntityGlow glow = new EntityGlow(item);
-
-                            glow.setGlowing(NamedTextColor.DARK_PURPLE);
-                            item.setUnlimitedLifetime(true);
-                            entity.setGlowing(true);
-                            entity.setInvulnerable(true);
-                            entity.setPersistent(true);
-
-                            updateEggDisplay();
-
-                            item.getWorld().spawnParticle(
-                                    Particle.DRAGON_BREATH,
-                                    item.getLocation().add(0, 0.3, 0),
-                                    5,
-                                    0.3, 0.3, 0.3,
-                                    0.01,
-                                    0.0f
-                            );
-
-                            item.getWorld().spawnParticle(
-                                    Particle.END_ROD,
-                                    item.getLocation().add(0, 0.2, 0),
-                                    5,
-                                    0.1, 0.3, 0.1,
-                                    0.01
-                            );
-                        }
-                    }
-                }
-
-                Item egg = getDragonEgg();
-                if (egg == null || !egg.isValid()) return;
-
-                TextDisplay display = getOrCreateEggDisplay(egg.getLocation());
-                display.teleport(egg.getLocation().add(0, 0.6, 0));
-                display.text(MessageBuilder.build(getPlayerInRangeText(egg.getLocation())));
-
-                for (Entity entity : Bukkit.getWorlds().getFirst().getEntities()) {
-                    if (entity instanceof TextDisplay td && td.getScoreboardTags().contains(dragonEggTag)) {
-                        td.remove();
-                    }
-                }
-
-            }
-        }.runTaskTimer(core, 0L, 10L);
-    }
-
-
-    public Item getDragonEgg() {
-        for (Entity entity : Bukkit.getWorlds().getFirst().getEntities()) {
-            if (entity instanceof Item item && item.getItemStack().getType() == Material.DRAGON_EGG) {
-                return item;
-            }
-        }
-        return null;
-    }
-
-    private String getPlayerInRangeText(Location location) {
-        int playerInRange = location.getNearbyEntities(20, 20, 20).stream()
-                .filter(entity -> entity instanceof Player)
-                .mapToInt(entity -> 1)
-                .sum();
-
-        if (playerInRange > 1) {
-            return "<red>" + playerInRange + " \uD83D\uDC64</red>";
-        }
-        return "<green>" + playerInRange + " \uD83D\uDC64</green>";
-    }
-
-    public void updateEggDisplay() {
-        Item egg = getDragonEgg();
-        if (egg == null) return;
-
-        Location loc = egg.getLocation().add(0, 0.5, 0);
-        TextDisplay display = getOrCreateEggDisplay(loc);
-
-        display.text(MessageBuilder.build(getPlayerInRangeText(loc)));
-    }
-
-    public TextDisplay getOrCreateEggDisplay(Location location) {
-        for (Entity entity : location.getWorld().getEntities()) {
-            if (entity instanceof TextDisplay textDisplay &&
-                    textDisplay.getScoreboardTags().contains(dragonEggTag)) {
-                return textDisplay;
-            }
-        }
-
-        return new TextDisplayBuilder(location)
-                .setTextMiniMessage(MessageBuilder.build(this.getPlayerInRangeText(location)))
-                .setAlignment(TextDisplay.TextAlignment.CENTER)
-                .setBillboard(TextDisplay.Billboard.CENTER)
-                .setInvisibleBackground(true)
-                .setShadowed(true)
-                .setTag(this.dragonEggTag)
-                .setRotation(location.getYaw(), 0)
-                .build();
     }
 
     public void setDate(String type, long timestamp) {

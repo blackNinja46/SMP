@@ -7,6 +7,9 @@ import org.bukkit.World;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.TextDisplay;
+import org.bukkit.util.Transformation;
+import org.joml.AxisAngle4f;
+import org.joml.Vector3f;
 
 import java.awt.*;
 
@@ -84,6 +87,11 @@ public class TextDisplayBuilder {
         if (invisibleBackground) {
             textDisplay.setBackgroundColor(Color.fromARGB(0, 0, 0, 0));
         }
+        return this;
+    }
+
+    public TextDisplayBuilder setTransformation(Transformation transformation) {
+        textDisplay.setTransformation(transformation);
         return this;
     }
 

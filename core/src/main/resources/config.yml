@@ -1,3 +1,4 @@
 HomeLimit: 3
 nether-open: true
 end-open: false
+DevServer: false

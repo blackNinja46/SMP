@@ -9,6 +9,7 @@ import live.blackninja.smp.cmd.shortcuts.TpaAcceptCmd;
 import live.blackninja.smp.cmd.shortcuts.TpaDenyCmd;
 import live.blackninja.smp.cmd.staff.*;
 import live.blackninja.smp.listener.*;
+import live.blackninja.smp.manger.DragonEggManger;
 import live.blackninja.smp.manger.SMPManger;
 import live.blackninja.smp.manger.StaffManger;
 import live.blackninja.smp.manger.StatsManger;
@@ -31,6 +32,7 @@ public final class Core extends JavaPlugin {
     private StaffManger staffManger;
     private InventoryManager inventoryManager;
     private StatsManger statsManger;
+    private DragonEggManger dragonEggManger;
 
     @Override
     public void onEnable() {
@@ -40,6 +42,7 @@ public final class Core extends JavaPlugin {
         staffManger = new StaffManger(this);
         inventoryManager = new InventoryManager(this);
         statsManger = new StatsManger(this);
+        dragonEggManger = new DragonEggManger(this);
 
         inventoryManager.init();
 
@@ -114,6 +117,10 @@ public final class Core extends JavaPlugin {
                 ghast.getAttribute(Attribute.FLYING_SPEED).setBaseValue(0.05);
             }
         }
+    }
+
+    public DragonEggManger getDragonEggManger() {
+        return dragonEggManger;
     }
 
     public StatsManger getStatsManger() {

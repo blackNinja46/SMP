@@ -68,7 +68,7 @@ public class RankManger {
         String name = color + player.getName();
         String statusSuffix = "";
         if (statusManger.hasPlayerStatus(player)) {
-            statusSuffix = " §8[§7" + statusManger.getStatusDisplay(statusManger.getStatus(player)) + "§8]";
+            statusSuffix = " §8[§7" + statusManger.getStatusDisplay(statusManger.getStatus(player)) + "§r§8]";
         }
 
         player.setPlayerListName(symbol + " " + name + statusSuffix);

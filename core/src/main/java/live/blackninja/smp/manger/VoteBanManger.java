@@ -123,7 +123,7 @@ public class VoteBanManger {
             target.sendMessage(MessageBuilder.buildOld(VOTE_BAN_PREFIX + "§7Das war nochmal knapp! §7Du wurdest %rnicht §7gebannt!"));
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 if (onlinePlayer != target) {
-                    onlinePlayer.sendMessage(MessageBuilder.buildOld(VOTE_BAN_PREFIX + "%yUnentschieden! (%b" + votesYes + " §8| %b" + votesNo +"§7) §8| §7Der Spieler %b" + target.getName() + " §7wurde %rnicht §7gebannt"));
+                    onlinePlayer.sendMessage(MessageBuilder.buildOld(VOTE_BAN_PREFIX + "%yUnentschieden§7! (%b" + votesYes + " §8| %b" + votesNo +"§7) §8| §7Der Spieler %b" + target.getName() + " §7wurde %rnicht §7gebannt"));
                 }
             }
         }else {
