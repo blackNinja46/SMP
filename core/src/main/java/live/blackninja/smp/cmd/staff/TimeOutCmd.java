@@ -11,6 +11,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.List;
 public record TimeOutCmd(Core core) implements CommandExecutor, TabCompleter {
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NonNull [] args) {
         if (!(sender instanceof Player)) return false;
 
         Player player = (Player) sender;
@@ -41,9 +42,9 @@ public record TimeOutCmd(Core core) implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        Player target = Bukkit.getPlayer(args[0]);
+        String targetName = args[0];
 
-        if (target == null) {
+        if (timeOutManger.existsPlayer(targetName)) {
             player.sendMessage(MessageBuilder.buildOld(TimeOutManger.PREFIX + "§7Dieser Spieler %rexistiert §7nicht!"));
             return true;
         }
@@ -60,15 +61,21 @@ public record TimeOutCmd(Core core) implements CommandExecutor, TabCompleter {
             default -> 0;
         };
 
-        timeOutManger.timeOut(target.getUniqueId(), reason, finalDuration);
-        target.kick(timeOutManger.getTimeOutMessage(reason, timeOutManger.getFormatedDuration(finalDuration)));
-        player.sendMessage(MessageBuilder.buildOld(TimeOutManger.PREFIX + "§7Der Spieler %b" + target.getName() + " §7wurde bis zum " + timeOutManger.getFormatedDuration(finalDuration) + " §7gebannt!"));
+        timeOutManger.timeOut(timeOutManger.getUUID(targetName), reason, finalDuration);
+
+        player.sendMessage(MessageBuilder.buildOld(TimeOutManger.PREFIX + "§7Der Spieler %b" + targetName + " §7wurde bis zum " + timeOutManger.getFormatedDuration(finalDuration) + " §7gebannt!"));
         player.sendMessage(MessageBuilder.buildOld(TimeOutManger.PREFIX + "§7Grund: %y" + reason));
+
+        Player target = Bukkit.getPlayer(targetName);
+
+        if (target == null) return true;
+
+        target.kick(timeOutManger.getTimeOutMessage(reason, timeOutManger.getFormatedDuration(finalDuration)));
         return true;
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NonNull [] args) {
         List<String> tc = new ArrayList<>();
 
         if (!(sender instanceof Player)) return null;

@@ -25,7 +25,7 @@ public record ServerPingListener(Core core) implements Listener {
             return "                 <color:#bf134a>SMP Developer Server</color>";
         }
         if (serverState) {
-            return "                     <gradient:#42ffad:#2dad76>1.21.10 Release</gradient>";
+            return "                  <gradient:#ff3d2b:#9e3211>\uD83D\uDDE1 1.21.11 Release \uD83D\uDDE1</gradient>";
         }
         return "                     <color:#ff1231>⚠ ᴍᴀɪɴᴛᴇɴᴀɴᴄᴇ ⚠</color>";
     }

@@ -1,0 +1,6 @@
+Bot:
+  Token: "0"
+  GuildID: "0"
+  SyncChat:
+    ChannelID: "0"
+    Enabled: true

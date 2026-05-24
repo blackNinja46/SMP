@@ -1,10 +1,12 @@
 package live.blackninja.smp.listener;
 
+import io.papermc.paper.connection.PlayerLoginConnection;
 import live.blackninja.smp.Core;
 import live.blackninja.smp.manger.TimeOutManger;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerLocaleChangeEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
 import java.util.UUID;
@@ -17,7 +19,7 @@ public record TimeOutListener(Core core) implements Listener {
         UUID uuid = player.getUniqueId();
         TimeOutManger timeOutManger = core.getSmpManger().getTimeOutManger();
 
-        if (!timeOutManger.isPlayerExist(uuid)) {
+        if (!timeOutManger.isPlayerTimeOuted(uuid)) {
             return;
         }
 

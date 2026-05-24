@@ -16,15 +16,15 @@ import java.util.UUID;
 
 public class TimeOutManger {
 
-    private Core core;
-    private TimeOutConfig config;
+    private final Core core;
+    private final TimeOutConfig config;
 
     public static final String PREFIX = StaffManger.STAFF_PREFIX;
 
     public TimeOutManger(Core core) {
         this.core = core;
 
-        config = new TimeOutConfig("timeOut");;
+        config = new TimeOutConfig("timeOut");
     }
 
     public void timeOut(UUID uuid, String reason, long duration) {
@@ -42,7 +42,7 @@ public class TimeOutManger {
         return config.getConfig().getString("TimeOut." + uuid + ".Reason");
     }
 
-    public boolean isPlayerExist(UUID uuid) {
+    public boolean isPlayerTimeOuted(UUID uuid) {
         return config.getConfig().get("TimeOut." + uuid) != null;
     }
 
@@ -59,6 +59,19 @@ public class TimeOutManger {
 
     public String getUsername(UUID uuid) {
         return UUIDFetcher.getName(uuid);
+    }
+
+    public UUID getUUID(String player) {
+        return UUIDFetcher.getUUID(player);
+    }
+
+    public boolean existsPlayer(String player) {
+        try {
+            UUIDFetcher.getUUID(player);
+            return false;
+        }catch (Exception e){
+            return true;
+        }
     }
 
     public Set<String> getTimeOutedPlayer() {

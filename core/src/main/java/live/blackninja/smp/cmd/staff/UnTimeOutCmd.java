@@ -11,6 +11,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ import java.util.UUID;
 public record UnTimeOutCmd(Core core) implements CommandExecutor, TabCompleter {
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NonNull [] args) {
         if (!(sender instanceof Player)) return false;
 
         Player player = (Player) sender;
@@ -40,7 +41,7 @@ public record UnTimeOutCmd(Core core) implements CommandExecutor, TabCompleter {
         UUID targetUUID = UUIDFetcher.getUUID(targetName);
         timeOutManger.unTimeOut(targetUUID);
 
-        if (timeOutManger.isPlayerExist(player.getUniqueId())) {
+        if (timeOutManger.isPlayerTimeOuted(player.getUniqueId())) {
             player.sendMessage(MessageBuilder.buildOld(Core.PREFIX + "§7Der Spieler %b" + targetName + " §7ist nicht auf der Timeout-Liste!"));
             return false;
         }
@@ -50,7 +51,7 @@ public record UnTimeOutCmd(Core core) implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NonNull [] args) {
         List<String> tc = new ArrayList<>();
 
         TimeOutManger timeOutManger = core.getSmpManger().getTimeOutManger();
@@ -63,13 +64,14 @@ public record UnTimeOutCmd(Core core) implements CommandExecutor, TabCompleter {
 
         if (args.length == 1) {
             Set<String> timeOutedPlayer = timeOutManger.getTimeOutedPlayer();
-            if (timeOutedPlayer.isEmpty()) {
-            }else for (String s : timeOutedPlayer) {
-                if (timeOutedPlayer.contains(s)) {
-                    continue;
+            if (!timeOutedPlayer.isEmpty()) {
+                for (String s : timeOutedPlayer) {
+                    if (timeOutedPlayer.contains(s)) {
+                        continue;
+                    }
+                    UUID uuid = UUIDFetcher.getUUID(s);
+                    tc.add(timeOutManger.getUsername(uuid));
                 }
-                UUID uuid = UUIDFetcher.getUUID(s);
-                tc.add(timeOutManger.getUsername(uuid));
             }
             return null;
         }

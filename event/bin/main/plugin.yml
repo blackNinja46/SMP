@@ -1,0 +1,23 @@
+name: SMPEvent
+version: '1.0'
+main: live.blackninja.event.Event
+api-version: '1.21'
+author: blackNinja46
+website: blackninja.live
+
+depend:
+  - SMP
+
+commands:
+  get-server-urls:
+    description: Server URLs
+  switch-event-server-state:
+    description: Switch the State of the Event Server
+
+permissions:
+  ninjasmp.event.cmd.serverstate:
+    description: Server State
+  ninjasmp.event.whitelist.bypass:
+    description: whitelist Bypass
+  ninjasmp.event.cmd.dashboard:
+    description: Dashboard Cmd
